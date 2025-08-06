@@ -62,7 +62,20 @@ function stopDrag() {
 // On load, set popup position to initial handle position
 window.addEventListener('DOMContentLoaded', () => {
     const sliderWidth = slider.clientWidth;
-    // Default to middle
-    let mouseX = sliderWidth / 2;
-    updateSlider(mouseX);
+    let startX = 0;
+    let endX = sliderWidth / 2;
+    let duration = 700; // ms
+    let startTime = null;
+
+    function animateSliderHandle(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const currentX = startX + (endX - startX) * progress;
+        updateSlider(currentX);
+        if (progress < 1) {
+            requestAnimationFrame(animateSliderHandle);
+        }
+    }
+    requestAnimationFrame(animateSliderHandle);
 });
